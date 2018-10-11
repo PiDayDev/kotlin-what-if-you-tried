@@ -28,6 +28,7 @@ class ImprovedCheckout : Checkout {
             val (offerQuantity, offerPrice) = offer
             val quantity = quantities[item]
             if (quantity != null && item in prices.keys) {
+                // FIXME what if it's >= a multiple of offerQuantity?
                 if (quantity >= offerQuantity) {
                     res += offerPrice
                 }

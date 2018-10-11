@@ -77,7 +77,7 @@ class CheckoutTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(Checkouts.class)
+    @ArgumentsSource(Kotlin.class)
     void repeatedOffer(Checkout checkout) {
         String apple = "apple";
         String pear = "pear";
@@ -92,9 +92,14 @@ class CheckoutTest {
 
     static class Checkouts implements ArgumentsProvider {
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-            return Stream.of(new UglyCheckout(), new ImprovedCheckout())
-                    .map(Arguments::of);
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new UglyCheckout(), new ImprovedCheckout()).map(Arguments::of);
+        }
+    }
+    static class Kotlin implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(new ImprovedCheckout()).map(Arguments::of);
         }
     }
 }
