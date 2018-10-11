@@ -28,31 +28,11 @@ class ImprovedCheckout : Checkout {
         for ((item, offer) in offers) {
             val (offerQuantity, offerPrice) = offer
             val quantity = quantities[item] ?: 0
-            when (item) {
-                APPLE -> {
-                    if (quantity >= offerQuantity) {
-                        res += offerPrice
-                    }
-                    quantities[item] = quantity - offerQuantity
+            if (item in prices.keys) {
+                if (quantity >= offerQuantity) {
+                    res += offerPrice
                 }
-                PEAR -> {
-                    if (quantity >= offerQuantity) {
-                        res += offerPrice
-                    }
-                    quantities[item] = quantity - offerQuantity
-                }
-                PINEAPPLE -> {
-                    if (quantity >= offerQuantity) {
-                        res += offerPrice
-                    }
-                    quantities[item] = quantity - offerQuantity
-                }
-                BANANA -> {
-                    if (quantity >= offerQuantity) {
-                        res += offerPrice
-                    }
-                    quantities[item] = quantity - offerQuantity
-                }
+                quantities[item] = quantity - offerQuantity
             }
         }
 
