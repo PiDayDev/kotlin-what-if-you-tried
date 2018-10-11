@@ -18,57 +18,47 @@ class ImprovedCheckout : Checkout {
 
     override fun pay(items: List<String>, offers: Map<String, Entry<Int, Int>>): Int {
         var res = 0
-        var apple = 0
-        var pear = 0
-        var pineapple = 0
-        var banana = 0
+
+        val quantities = mutableMapOf<String, Int>()
 
         for (item in items) {
-            when (item) {
-                APPLE -> apple++
-                PEAR -> pear++
-                PINEAPPLE -> pineapple++
-                BANANA -> banana++
-            }
+            quantities[item] = 1 + (quantities[item] ?: 0)
         }
 
         for ((item, offer) in offers) {
             val (offerQuantity, offerPrice) = offer
+            val quantity = quantities[item] ?: 0
             when (item) {
                 APPLE -> {
-                    if (apple >= offerQuantity) {
+                    if (quantity >= offerQuantity) {
                         res += offerPrice
                     }
-                    apple -= offerQuantity
+                    quantities[item] = quantity - offerQuantity
                 }
                 PEAR -> {
-                    if (pear >= offerQuantity) {
+                    if (quantity >= offerQuantity) {
                         res += offerPrice
                     }
-                    pear -= offerQuantity
+                    quantities[item] = quantity - offerQuantity
                 }
                 PINEAPPLE -> {
-                    if (pineapple >= offerQuantity) {
+                    if (quantity >= offerQuantity) {
                         res += offerPrice
                     }
-                    pineapple -= offerQuantity
+                    quantities[item] = quantity - offerQuantity
                 }
                 BANANA -> {
-                    if (banana >= offerQuantity) {
+                    if (quantity >= offerQuantity) {
                         res += offerPrice
                     }
-                    banana -= offerQuantity
+                    quantities[item] = quantity - offerQuantity
                 }
             }
         }
 
         for ((item, price) in prices) {
-            when (item) {
-                APPLE -> res += apple * price
-                PEAR -> res += pear * price
-                PINEAPPLE -> res += pineapple * price
-                BANANA -> res += banana * price
-            }
+            val quantity = quantities[item] ?: 0
+            res += quantity * price
         }
 
         return res
