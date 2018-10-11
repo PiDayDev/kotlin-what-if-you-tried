@@ -24,10 +24,10 @@ class ImprovedCheckout : Checkout {
                 .eachCount()
                 .toMutableMap()
 
-        for ((item, offer) in offers) {
+        offers.forEach { (item, offer) ->
             val (offerQuantity, offerPrice) = offer
-            val quantity = quantities[item] ?: 0
-            if (item in prices.keys) {
+            val quantity = quantities[item]
+            if (quantity != null && item in prices.keys) {
                 if (quantity >= offerQuantity) {
                     res += offerPrice
                 }
@@ -36,7 +36,7 @@ class ImprovedCheckout : Checkout {
         }
 
         res += quantities.entries
-                .sumBy { (item,quantity) -> quantity * (prices[item]?:0) }
+                .sumBy { (item, quantity) -> quantity * (prices[item] ?: 0) }
 
         return res
     }
