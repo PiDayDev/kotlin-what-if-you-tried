@@ -20,7 +20,7 @@ class ImprovedCheckout : Checkout {
         var res = 0
 
         val quantities = items
-                .groupingBy { item -> item }
+                .groupingBy { it }
                 .eachCount()
                 .toMutableMap()
 
