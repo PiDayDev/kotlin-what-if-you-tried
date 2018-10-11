@@ -23,10 +23,10 @@ class ImprovedCheckout : Checkout {
 
         for (item in items) {
             when (item) {
-                "apple" -> a++
-                "pear" -> p++
-                "pineapple" -> ananas++
-                "banana" -> b++
+                APPLE -> a++
+                PEAR -> p++
+                PINEAPPLE -> ananas++
+                BANANA -> b++
             }
         }
 
@@ -34,10 +34,10 @@ class ImprovedCheckout : Checkout {
 
         for ((key, value) in map) {
             when (key) {
-                "apple" -> res += a * value
-                "pear" -> res += p * value
-                "pineapple" -> res += ananas * value
-                "banana" -> res += b * value
+                APPLE -> res += a * value
+                PEAR -> res += p * value
+                PINEAPPLE -> res += ananas * value
+                BANANA -> res += b * value
             }
         }
 
