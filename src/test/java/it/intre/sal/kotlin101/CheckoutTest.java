@@ -76,6 +76,20 @@ class CheckoutTest {
                         apple, pear, apple, pear, lychee, apple, banana, pineapple), ll));
     }
 
+    @ParameterizedTest
+    @ArgumentsSource(Checkouts.class)
+    void repeatedOffer(Checkout checkout) {
+        String apple = "apple";
+        String pear = "pear";
+
+        Map<String, Entry<Integer, Integer>> offers = withOffers(2, apple, 75);
+
+        int expectedPrice = 2 * 75 + 30;
+        assertEquals(expectedPrice, checkout.pay(
+                forFruits(apple, apple, apple, apple, pear),
+                offers));
+    }
+
     static class Checkouts implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
