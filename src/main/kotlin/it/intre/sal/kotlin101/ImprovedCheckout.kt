@@ -35,10 +35,8 @@ class ImprovedCheckout : Checkout {
             }
         }
 
-        for ((item, price) in prices) {
-            val quantity = quantities[item] ?: 0
-            res += quantity * price
-        }
+        res += quantities.entries
+                .sumBy { (item,quantity) -> quantity * (prices[item]?:0) }
 
         return res
     }
