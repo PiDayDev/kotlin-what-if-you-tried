@@ -17,29 +17,24 @@ class ImprovedCheckout : Checkout {
     )
 
     override fun pay(items: List<String>, offers: Map<String, Entry<Int, Int>>): Int {
-        var res = 0
-
         val quantities = items
                 .groupingBy { it }
                 .eachCount()
                 .toMutableMap()
 
+        var offerTotal = 0
         offers.forEach { (item, offer) ->
             val (offerQuantity, offerPrice) = offer
             val quantity = quantities[item]
             if (quantity != null && item in prices.keys) {
-                // FIXME what if it's >= a multiple of offerQuantity?
-                if (quantity >= offerQuantity) {
-                    res += offerPrice
-                }
-                quantities[item] = quantity - offerQuantity
+                val repeat = quantity / offerQuantity
+                offerTotal += repeat * offerPrice
+                quantities[item] = quantity - repeat * offerQuantity
             }
         }
 
-        res += quantities.entries
-                .sumBy { (item, quantity) -> quantity * (prices[item] ?: 0) }
-
-        return res
+        return offerTotal +
+                quantities.entries.sumBy { (item, quantity) -> quantity * (prices[item] ?: 0) }
     }
 
 }
