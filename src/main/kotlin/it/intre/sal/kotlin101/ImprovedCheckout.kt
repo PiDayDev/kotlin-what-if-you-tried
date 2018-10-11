@@ -14,6 +14,34 @@ class ImprovedCheckout : Checkout {
         BANANA to 60
     )
 
-    override fun pay(items: List<String>, offers: Map<String, Map.Entry<Int, Int>>) = 0
+    override fun pay(items: List<String>, offers: Map<String, Map.Entry<Int, Int>>): Int {
+        var res = 0
+        var a = 0
+        var p = 0
+        var ananas = 0
+        var b = 0
+
+        for (item in items) {
+            when (item) {
+                "apple" -> a++
+                "pear" -> p++
+                "pineapple" -> ananas++
+                "banana" -> b++
+            }
+        }
+
+        // TODO offers
+
+        for ((key, value) in map) {
+            when (key) {
+                "apple" -> res += a * value
+                "pear" -> res += p * value
+                "pineapple" -> res += ananas * value
+                "banana" -> res += b * value
+            }
+        }
+
+        return res
+    }
 
 }
