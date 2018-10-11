@@ -79,7 +79,7 @@ class CheckoutTest {
     static class Checkouts implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-            return Stream.of(new UglyCheckout())
+            return Stream.of(new UglyCheckout(), new ImprovedCheckout())
                     .map(Arguments::of);
         }
     }
