@@ -19,11 +19,10 @@ class ImprovedCheckout : Checkout {
     override fun pay(items: List<String>, offers: Map<String, Entry<Int, Int>>): Int {
         var res = 0
 
-        val quantities = mutableMapOf<String, Int>()
-
-        for (item in items) {
-            quantities[item] = 1 + (quantities[item] ?: 0)
-        }
+        val quantities = items
+                .groupingBy { item -> item }
+                .eachCount()
+                .toMutableMap()
 
         for ((item, offer) in offers) {
             val (offerQuantity, offerPrice) = offer
