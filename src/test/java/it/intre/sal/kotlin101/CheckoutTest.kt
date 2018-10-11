@@ -6,26 +6,15 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.ArgumentsProvider
 import org.junit.jupiter.params.provider.ArgumentsSource
-
-import java.util.AbstractMap.SimpleEntry
-import java.util.Arrays
-import java.util.HashMap
-import kotlin.collections.Map.Entry
 import java.util.stream.Stream
 
 internal class CheckoutTest {
 
-    private val withNoOffers = HashMap<String, Entry<Int, Int>>()
+    private val withNoOffers = mutableMapOf<String, Pair<Int, Int>>()
 
-    private fun withOffers(quantity: Int, fruit: String, offerPrice: Int): MutableMap<String, Entry<Int, Int>> {
-        val offers = HashMap<String, Entry<Int, Int>>()
-        offers[fruit] = SimpleEntry(quantity, offerPrice)
-        return offers
-    }
+    private fun withOffers(quantity: Int, fruit: String, offerPrice: Int) = mutableMapOf(fruit to (quantity to offerPrice))
 
-    private fun forFruits(vararg fruits: String): List<String> {
-        return Arrays.asList(*fruits)
-    }
+    private fun forFruits(vararg fruits: String) = fruits.asList()
 
     @ParameterizedTest
     @ArgumentsSource(Checkouts::class)
@@ -66,7 +55,7 @@ internal class CheckoutTest {
         val banana = "banana"
 
         val ll = withOffers(3, apple, 130)
-        ll[pear] = SimpleEntry(2, 45)
+        ll[pear] = 2 to 45
 
         val expectedPrice = 455
         assertEquals(expectedPrice.toLong(), checkout.pay(

@@ -1,7 +1,5 @@
 package it.intre.sal.kotlin101
 
-import kotlin.collections.Map.Entry
-
 const val APPLE = "apple"
 const val PEAR = "pear"
 const val PINEAPPLE = "pineapple"
@@ -16,7 +14,7 @@ class ImprovedCheckout : Checkout {
             BANANA to 60
     )
 
-    override fun pay(items: List<String>, offers: Map<String, Entry<Int, Int>>): Int {
+    override fun pay(items: List<String>, offers: Map<String, Pair<Int, Int>>): Int {
         val quantities = items
                 .groupingBy { it }
                 .eachCount()
