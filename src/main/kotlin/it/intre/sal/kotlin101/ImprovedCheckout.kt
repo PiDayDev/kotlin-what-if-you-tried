@@ -26,12 +26,14 @@ class ImprovedCheckout : Checkout {
 
     private fun pay(quantities: MutableMap<String, Int>, offers: Map<String, Offer>) =
             prices.entries.sumBy { (item, price) ->
-                val quantity = quantities[item] ?: 0
-                val offer = offers[item] ?: NoOffer
-                val appliedOffer = quantity / offer
-                val residual = quantity - appliedOffer.quantity
-                appliedOffer.price + residual * price
+                payItem(quantities[item] ?: 0, price, offers[item] ?: NoOffer)
             }
+
+    private fun payItem(quantity: Int, price: Int, offer: Offer): Int {
+        val appliedOffer = quantity / offer
+        val residual = quantity - appliedOffer.quantity
+        return appliedOffer.price + residual * price
+    }
 
 }
 
