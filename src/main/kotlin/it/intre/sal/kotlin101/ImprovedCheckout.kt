@@ -20,7 +20,7 @@ class ImprovedCheckout : Checkout {
                 .eachCount()
                 .toMutableMap()
 
-        val offersMap = offers.mapValues { (_, v) -> Offer(quantity = v.first, price = v.second) }
+        val offersMap = offers.mapValues { (_, v) -> GroupOffer(quantity = v.first, price = v.second) }
         return pay(quantities, offersMap)
     }
 
@@ -41,8 +41,17 @@ class ImprovedCheckout : Checkout {
 
 }
 
-data class Offer(val quantity: Int, val price: Int) {
-    operator fun times(repeat: Int) = Offer(repeat * quantity, repeat * price)
+sealed class Offer
+
+data class GroupOffer(val quantity: Int, val price: Int) : Offer() {
+    operator fun times(repeat: Int) = GroupOffer(repeat * quantity, repeat * price)
 }
 
-operator fun Int.div(offer: Offer) = offer * (this / offer.quantity)
+object NoOffer : Offer()
+
+
+operator fun Int.div(offer: Offer) =
+        when (offer) {
+            is GroupOffer -> offer * (this / offer.quantity)
+            NoOffer -> GroupOffer(0, 0)
+        }
