@@ -18,13 +18,12 @@ class ImprovedCheckout : Checkout {
         val quantities = items
                 .groupingBy { it }
                 .eachCount()
-                .toMutableMap()
-
         val offersMap = offers.mapValues { (_, v) -> GroupOffer(quantity = v.first, price = v.second) }
+
         return pay(quantities, offersMap)
     }
 
-    private fun pay(quantities: MutableMap<String, Int>, offers: Map<String, Offer>) =
+    private fun pay(quantities: Map<String, Int>, offers: Map<String, Offer>) =
             prices.entries.sumBy { (item, price) ->
                 payItem(quantities[item] ?: 0, price, offers[item] ?: NoOffer)
             }
