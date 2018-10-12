@@ -20,6 +20,10 @@ class ImprovedCheckout : Checkout {
                 .eachCount()
                 .toMutableMap()
 
+        return pay(quantities, offers)
+    }
+
+    private fun pay(quantities: MutableMap<String, Int>, offers: Map<String, Pair<Int, Int>>): Int {
         var offerTotal = 0
         offers.forEach { (item, offer) ->
             val (offerQuantity, offerPrice) = offer
