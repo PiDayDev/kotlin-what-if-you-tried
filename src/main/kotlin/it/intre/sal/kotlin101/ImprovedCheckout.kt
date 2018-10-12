@@ -25,15 +25,12 @@ class ImprovedCheckout : Checkout {
     }
 
     private fun pay(quantities: MutableMap<String, Int>, offers: Map<String, Offer>): Int {
-        var total = 0
-
-        prices.forEach { item, price ->
+        var total = prices.entries.sumBy { (item, price) ->
             val quantity = quantities[item] ?: 0
             val offer = offers[item] ?: NoOffer
             val appliedOffer = quantity / offer
-            total += appliedOffer.price
             val residual = quantity - appliedOffer.quantity
-            total += residual * price
+            appliedOffer.price + residual * price
         }
 
         return total
