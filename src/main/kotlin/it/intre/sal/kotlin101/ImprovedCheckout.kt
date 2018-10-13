@@ -14,27 +14,20 @@ class ImprovedCheckout : Checkout {
             BANANA to 60
     )
 
-    override fun pay(items: List<String>, offers: Map<String, Pair<Int, Int>>): Int {
-        val quantities = items
-                .groupingBy { it }
-                .eachCount()
-
-        val offersMap = prices
-                .mapValues { (item, _) -> SpecialPrice.from(offers[item]) }
-
-        return pay(quantities, offersMap)
-    }
-
-    private fun pay(quantities: Map<String, Int>, offers: Map<String, SpecialPrice>) =
+    override fun pay(items: List<String>, offers: Map<String, Pair<Int, Int>>) =
             prices.entries.sumBy { (item, price) ->
-                val quantity = quantities[item] ?: 0
-                val offer: SpecialPrice? = offers[item] // still nullable :(
-                if (offer is Offer) {
+                val quantity = items.count { it == item }
+                val offer = SpecialPrice.from(offers[item])
+                payItem(quantity, price, offer)
+            }
+
+    private fun payItem(quantity: Int, price: Int, offer: SpecialPrice) =
+            when (offer) {
+                is Offer -> {
                     val appliedOffer = offer buying quantity
                     appliedOffer.price + (quantity - appliedOffer.quantity) * price
-                } else {
-                    quantity * price
                 }
+                NoOffer -> quantity * price
             }
 
 }
