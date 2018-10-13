@@ -18,21 +18,13 @@ class ImprovedCheckout : Checkout {
             prices.entries.sumBy { (item, price) ->
                 val quantity = items.count { it == item }
                 val offer = SpecialPrice.from(offers[item])
-                payItem(quantity, price, offer)
-            }
-
-    private fun payItem(quantity: Int, price: Int, offer: SpecialPrice) =
-            when (offer) {
-                is Offer -> {
-                    val appliedOffer = offer buying quantity
-                    appliedOffer.price + (quantity - appliedOffer.quantity) * price
-                }
-                NoOffer -> quantity * price
+                offer.payItem(quantity, price)
             }
 
 }
 
 sealed class SpecialPrice {
+
     companion object {
         fun from(quantityToPrice: Pair<Int, Int>?) =
                 when (quantityToPrice) {
@@ -40,15 +32,25 @@ sealed class SpecialPrice {
                     else -> Offer(quantity = quantityToPrice.first, price = quantityToPrice.second)
                 }
     }
+
+    abstract fun payItem(quantity: Int, price: Int): Int
+
 }
 
 data class Offer(val quantity: Int, val price: Int) : SpecialPrice() {
     operator fun times(repeat: Int) = Offer(repeat * quantity, repeat * price)
 
-    infix fun buying(quantity: Int): Offer {
+    private infix fun buying(quantity: Int): Offer {
         val repeat = quantity / this.quantity
         return this * repeat
     }
+
+    override fun payItem(quantity: Int, price: Int): Int {
+        val appliedOffer = this buying quantity
+        return appliedOffer.price + (quantity - appliedOffer.quantity) * price
+    }
 }
 
-object NoOffer : SpecialPrice()
+object NoOffer : SpecialPrice() {
+    override fun payItem(quantity: Int, price: Int) = quantity * price
+}
