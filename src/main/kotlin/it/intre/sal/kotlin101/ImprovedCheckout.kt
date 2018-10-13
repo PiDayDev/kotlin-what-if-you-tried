@@ -25,18 +25,21 @@ class ImprovedCheckout : Checkout {
     }
 
     private fun pay(quantities: MutableMap<String, Int>, offers: Map<String, Offer>): Int {
-        var offerTotal = 0
-        offers.forEach { (item, offer) ->
-            val quantity = quantities[item]
-            if (quantity != null && item in prices.keys) {
+        var total = 0
+
+        prices.forEach { item, price ->
+            val quantity = quantities[item] ?: 0
+            val offer = offers[item]
+            if (offer != null) {
                 val appliedOffer = offer buying quantity
-                offerTotal += appliedOffer.price
-                quantities[item] = quantity - appliedOffer.quantity
+                total += appliedOffer.price
+                total += (quantity - appliedOffer.quantity) * price
+            } else {
+                total += quantity * price
             }
         }
 
-        return offerTotal +
-                quantities.entries.sumBy { (item, quantity) -> quantity * (prices[item] ?: 0) }
+        return total
     }
 
 }
@@ -44,7 +47,7 @@ class ImprovedCheckout : Checkout {
 data class Offer(val quantity: Int, val price: Int) {
     operator fun times(repeat: Int) = Offer(repeat * quantity, repeat * price)
 
-    infix fun buying(quantity: Int) : Offer {
+    infix fun buying(quantity: Int): Offer {
         val repeat = quantity / this.quantity
         return this * repeat
     }
