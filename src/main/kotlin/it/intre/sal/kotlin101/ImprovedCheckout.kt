@@ -29,8 +29,7 @@ class ImprovedCheckout : Checkout {
         offers.forEach { (item, offer) ->
             val quantity = quantities[item]
             if (quantity != null && item in prices.keys) {
-                val repeat = quantity / offer.quantity
-                val appliedOffer = offer * repeat
+                val appliedOffer = offer buying quantity
                 offerTotal += appliedOffer.price
                 quantities[item] = quantity - appliedOffer.quantity
             }
@@ -44,4 +43,9 @@ class ImprovedCheckout : Checkout {
 
 data class Offer(val quantity: Int, val price: Int) {
     operator fun times(repeat: Int) = Offer(repeat * quantity, repeat * price)
+
+    infix fun buying(quantity: Int) : Offer {
+        val repeat = quantity / this.quantity
+        return this * repeat
+    }
 }
