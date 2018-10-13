@@ -38,7 +38,9 @@ class ImprovedCheckout : Checkout {
 
 }
 
-data class Offer(val quantity: Int, val price: Int) {
+sealed class SpecialPrice
+
+data class Offer(val quantity: Int, val price: Int): SpecialPrice() {
     operator fun times(repeat: Int) = Offer(repeat * quantity, repeat * price)
 
     infix fun buying(quantity: Int): Offer {
@@ -46,3 +48,5 @@ data class Offer(val quantity: Int, val price: Int) {
         return this * repeat
     }
 }
+
+object NoOffer : SpecialPrice()
