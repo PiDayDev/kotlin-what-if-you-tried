@@ -18,16 +18,17 @@ class ImprovedCheckout : Checkout {
         val quantities = items
                 .groupingBy { it }
                 .eachCount()
-                .toMutableMap()
 
-        val offersMap = offers.mapValues { (_, v) -> Offer(quantity = v.first, price = v.second) }
+        val offersMap = prices
+                .mapValues { (item, _) -> SpecialPrice.from(offers[item]) }
+
         return pay(quantities, offersMap)
     }
 
-    private fun pay(quantities: MutableMap<String, Int>, offers: Map<String, Offer>) =
+    private fun pay(quantities: Map<String, Int>, offers: Map<String, SpecialPrice>) =
             prices.entries.sumBy { (item, price) ->
                 val quantity = quantities[item] ?: 0
-                val offer = offers[item] ?: NoOffer
+                val offer: SpecialPrice? = offers[item] // still nullable :(
                 if (offer is Offer) {
                     val appliedOffer = offer buying quantity
                     appliedOffer.price + (quantity - appliedOffer.quantity) * price
@@ -38,9 +39,17 @@ class ImprovedCheckout : Checkout {
 
 }
 
-sealed class SpecialPrice
+sealed class SpecialPrice {
+    companion object {
+        fun from(quantityToPrice: Pair<Int, Int>?) =
+                when (quantityToPrice) {
+                    null -> NoOffer
+                    else -> Offer(quantity = quantityToPrice.first, price = quantityToPrice.second)
+                }
+    }
+}
 
-data class Offer(val quantity: Int, val price: Int): SpecialPrice() {
+data class Offer(val quantity: Int, val price: Int) : SpecialPrice() {
     operator fun times(repeat: Int) = Offer(repeat * quantity, repeat * price)
 
     infix fun buying(quantity: Int): Offer {
