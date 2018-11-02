@@ -1,5 +1,6 @@
 package it.intre.sal.kotlin101
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -11,8 +12,6 @@ import java.util.Arrays
 import java.util.HashMap
 import kotlin.collections.Map.Entry
 import java.util.stream.Stream
-
-import org.junit.Assert.assertEquals
 
 internal class CheckoutTest {
 
