@@ -1,33 +1,20 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.js.translate.context.Namer.kotlin
 
-buildscript {
-    var kotlin_version: String by extra
-    kotlin_version = "1.2.70"
-
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath(kotlinModule("gradle-plugin", kotlin_version))
-    }
+plugins {
+    java
+    kotlin("jvm") version "1.3.0"
 }
 
-group = "it.intre.guilds"
+group = "it.intre.sal"
 version = "1.0-SNAPSHOT"
-
-apply {
-    plugin("java")
-    plugin("kotlin")
-}
-
-val kotlin_version: String by extra
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile(kotlinModule("stdlib-jdk8", kotlin_version))
+    compile(kotlin("stdlib-jdk8"))
     testCompile("org.junit.jupiter", "junit-jupiter-api", "5.1.0")
     testCompile("org.junit.jupiter", "junit-jupiter-params", "5.1.0")
     testRuntime("org.junit.platform", "junit-platform-launcher", "1.1.0")
@@ -40,4 +27,8 @@ configure<JavaPluginConvention> {
 }
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+val test by tasks.getting(Test::class) {
+    useJUnitPlatform()
 }
